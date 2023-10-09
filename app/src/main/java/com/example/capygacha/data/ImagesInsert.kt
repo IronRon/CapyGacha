@@ -22,3 +22,5 @@ val images = listOf(
         name = "Super Capy 3"
     ),
 )
+
+val defaultImage = Image(id = -1, resFile = "loading_img", name = "placeholder")

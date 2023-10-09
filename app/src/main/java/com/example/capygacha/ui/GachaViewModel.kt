@@ -1,6 +1,6 @@
 package com.example.capygacha.ui
 
-import android.provider.SyncStateContract.Helpers.insert
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
@@ -10,10 +10,10 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.capygacha.GachaApplication
 import com.example.capygacha.data.GachaDao
 import com.example.capygacha.data.Image
-import com.example.capygacha.data.ItemsRepository
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import kotlin.random.Random
 
 class GachaViewModel(
     //private val itemsRepository: ItemsRepository,
@@ -22,15 +22,18 @@ class GachaViewModel(
 
 
     fun insertImage(image: Image) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.Default) {
             gachaDao.insert(image)
         }
     }
 
-    fun getAllImage() {
-        viewModelScope.launch {
-            gachaDao.getAllItems()
-        }
+    fun getAllImage(): Flow<List<Image>> = gachaDao.getAllItems()
+
+    suspend fun getImage(): Image {
+        val randomInt = Random.nextInt(1, 5)
+        val img = gachaDao.getItem(randomInt)
+        gachaDao.update(img.copy(summoned = true))
+        return img
     }
 
 

@@ -1,11 +1,7 @@
 package com.example.capygacha
 
 import android.app.Application
-import com.example.capygacha.data.AppContainer
-import com.example.capygacha.data.AppDataContainer
 import com.example.capygacha.data.AppDatabase
-import com.example.capygacha.data.ItemsRepository
-import com.example.capygacha.data.OfflineItemsRepository
 
 class GachaApplication : Application() {
     val database: AppDatabase by lazy { AppDatabase.getDatabase(this) }

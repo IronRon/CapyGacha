@@ -19,7 +19,7 @@ import com.example.capygacha.data.images
 @Composable
 fun MainScreen(
     onCollectionClick:() -> Unit,
-    onSummonClick: (Image) -> Unit,
+    onSummonClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -29,9 +29,7 @@ fun MainScreen(
         Spacer(modifier = Modifier.weight(1f, true))
         Row {
             Button(
-                onClick = {
-                    images.forEach(onSummonClick)
-                },
+                onClick = onSummonClick,
                 modifier = modifier.widthIn(min = 150.dp)
             ) {
                 Text(stringResource(R.string.summon_button))

@@ -20,8 +20,8 @@ interface GachaDao {
     suspend fun delete(image: Image)
 
     @Query("SELECT * from image WHERE id = :id")
-    fun getItem(id: Int): Flow<Image>
+    suspend fun getItem(id: Int): Image
 
-    @Query("SELECT * from image ORDER BY name ASC")
+    @Query("SELECT * from image WHERE summoned = 1 ORDER BY id ASC")
     fun getAllItems(): Flow<List<Image>>
 }
