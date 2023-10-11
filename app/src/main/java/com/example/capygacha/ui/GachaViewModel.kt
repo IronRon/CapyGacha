@@ -30,12 +30,11 @@ class GachaViewModel(
     fun getAllImage(): Flow<List<Image>> = gachaDao.getAllItems()
 
     suspend fun getImage(): Image {
-        val randomInt = Random.nextInt(1, 5)
+        val randomInt = Random.nextInt(1, 47)
         val img = gachaDao.getItem(randomInt)
         gachaDao.update(img.copy(summoned = true))
         return img
     }
-
 
     companion object {
         val factory : ViewModelProvider.Factory = viewModelFactory {

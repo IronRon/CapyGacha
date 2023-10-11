@@ -1,7 +1,16 @@
 package com.example.capygacha
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
+import android.content.pm.ActivityInfo
+import android.media.MediaPlayer
 import androidx.annotation.StringRes
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -10,10 +19,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,6 +32,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -86,7 +100,9 @@ fun CapyGachaApp(
     )
     val coroutineScope = rememberCoroutineScope()
     var img by mutableStateOf(defaultImage)
+    val mMediaPlayer = MediaPlayer.create(LocalContext.current, R.raw.zanza)
 
+    //mMediaPlayer.start()
 
     Scaffold(
         topBar = {
@@ -105,42 +121,88 @@ fun CapyGachaApp(
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(route = CapyGachaScreen.Start.name) {
-                MainScreen(
-                    onCollectionClick = {
-                        coroutineScope.launch {
-                            viewModel.getAllImage()
-                        }
-                        navController.navigate(CapyGachaScreen.Collection.name)
-                    },
-                    onSummonClick = {
-//                        coroutineScope.launch {
-//                            viewModel.insertImage(it)
-//                        }
-                        navController.navigate(CapyGachaScreen.Summon.name)
+                Box {
+                    LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+                    Image(
+                        painter = painterResource(id = R.drawable.bakkthing),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    MainScreen(
+                        onCollectionClick = {
+                            coroutineScope.launch {
+                                viewModel.getAllImage()
+                            }
+                            navController.navigate(CapyGachaScreen.Collection.name)
+                        },
+                        onSummonClick = {
+                               coroutineScope.launch {
+                                   viewModel.insertImage(it)
+                               }
+                            navController.navigate(CapyGachaScreen.Summon.name)
 
-                    }
-                )
+                        }
+                    )
+                }
             }
             composable(route = CapyGachaScreen.Summon.name) {
-                SummonScreen(
-                    img = img,
-                    summon = {
-                        coroutineScope.launch {
-                            img = viewModel.getImage()
+                Box {
+                    Image(
+                        painter = painterResource(id = R.drawable.bacofground),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                    SummonScreen(
+                        img = img,
+                        summon = {
+                            coroutineScope.launch {
+                                img = viewModel.getImage()
+                            }
                         }
-                    }
-                )
+                    )
+                }
             }
             composable(route = CapyGachaScreen.Collection.name) {
-                CollectionScreen(
-                    imgList = imgCollection,
-                    summon = {
-                        coroutineScope.launch {
-                            img = viewModel.getImage()
+                Box {
+                    LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+                    Image(
+                        painter = painterResource(id = R.drawable.backgroundgacha),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    CollectionScreen(
+                        imgList = imgCollection,
+                        summon = {
+                            coroutineScope.launch {
+                                img = viewModel.getImage()
+                            }
                         }
-                    }
-                )
+                    )
+                }
             }
         }
     }
+}
+
+@Composable
+fun LockScreenOrientation(orientation: Int) {
+    val context = LocalContext.current
+    DisposableEffect(Unit) {
+        val activity = context.findActivity() ?: return@DisposableEffect onDispose {}
+        val originalOrientation = activity.requestedOrientation
+        activity.requestedOrientation = orientation
+        onDispose {
+            // restore original orientation when view disappears
+            activity.requestedOrientation = originalOrientation
+        }
+    }
+}
+
+fun Context.findActivity(): Activity? = when (this) {
+    is Activity -> this
+    is ContextWrapper -> baseContext.findActivity()
+    else -> null
 }

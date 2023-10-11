@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -34,13 +35,16 @@ fun SummonScreen(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier.padding(12.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(12.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         val resourceId = getDrawableResourceId(LocalContext.current,img.resFile)
         Box(
-            modifier = modifier.size(280.dp)
+            modifier = modifier.fillMaxWidth(),
+            contentAlignment = Alignment.Center
         ) {
             AsyncImage(
                 model = ImageRequest.Builder(context = LocalContext.current)
@@ -53,14 +57,17 @@ fun SummonScreen(
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxWidth()
             )
+            Column(modifier = modifier) {
+                Spacer(modifier = modifier.weight(1f))
+                Button(
+                    onClick = summon,
+                    modifier = modifier.widthIn(min = 150.dp)
+                ) {
+                    Text(stringResource(R.string.summon_button))
+                }
+            }
         }
-        Spacer(modifier = modifier.weight(1f))
-        Button(
-            onClick = summon,
-            modifier = modifier.widthIn(min = 150.dp)
-        ) {
-            Text(stringResource(R.string.summon_button))
-        }
+        //Spacer(modifier = modifier.weight(1f))
     }
 }
 
