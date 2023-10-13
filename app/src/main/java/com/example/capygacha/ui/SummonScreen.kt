@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -36,8 +37,7 @@ fun SummonScreen(
 ) {
     Column(
         modifier = modifier
-            .fillMaxWidth()
-            .padding(12.dp),
+            .fillMaxWidth(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -59,6 +59,11 @@ fun SummonScreen(
             )
             Column(modifier = modifier) {
                 Spacer(modifier = modifier.weight(1f))
+                TextColor(
+                    name = img.name,
+                    rarity = img.rarity,
+                    modifier = modifier.padding(12.dp)
+                )
                 Button(
                     onClick = summon,
                     modifier = modifier.widthIn(min = 150.dp)
@@ -70,6 +75,30 @@ fun SummonScreen(
         //Spacer(modifier = modifier.weight(1f))
     }
 }
+
+@Composable
+fun TextColor(
+    name: String,
+    rarity: String,
+    modifier: Modifier = Modifier
+) {
+    val color = when (rarity) {
+        "Common" -> Color(0xFFFFFFFF)
+        "Uncommon" -> Color(0xFF0000FF)
+        "Rare" -> Color(0xFFFF0000)
+        "Mythical" -> Color(0xFF800080)
+        "Legendary" -> Color(0xFFFFD700)
+
+        else -> Color(0xFFFFFFFF)
+    }
+
+    Text(
+        text = name,
+        color = color,
+        modifier = modifier.padding(12.dp)
+    )
+}
+
 
 fun getDrawableResourceId(context: Context, drawableName: String): Int {
     return try {

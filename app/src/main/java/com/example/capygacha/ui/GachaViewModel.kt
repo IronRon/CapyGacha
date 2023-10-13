@@ -30,9 +30,21 @@ class GachaViewModel(
     fun getAllImage(): Flow<List<Image>> = gachaDao.getAllItems()
 
     suspend fun getImage(): Image {
-        val randomInt = Random.nextInt(1, 47)
-        val img = gachaDao.getItem(randomInt)
+        val rarity = when(Random.nextInt(1, 100)) {
+            in 1..34 -> "Common"
+            in 35..59 -> "Uncommon"
+            in 60..79 -> "Rare"
+            in 80..94 -> "Mythical"
+            in 95..100 -> "Legendary"
+            else -> "Common"
+        }
+
+        val numOfImg = gachaDao.getNumberOfImages(rarity)
+
+        val randomInt = Random.nextInt(1, numOfImg)
+        val img = gachaDao.getItem(randomInt, rarity)
         gachaDao.update(img.copy(summoned = true))
+
         return img
     }
 

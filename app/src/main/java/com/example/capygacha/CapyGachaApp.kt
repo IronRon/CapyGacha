@@ -102,7 +102,7 @@ fun CapyGachaApp(
     var img by mutableStateOf(defaultImage)
     val mMediaPlayer = MediaPlayer.create(LocalContext.current, R.raw.zanza)
 
-    //mMediaPlayer.start()
+    mMediaPlayer.start()
 
     Scaffold(
         topBar = {
@@ -127,7 +127,7 @@ fun CapyGachaApp(
                         painter = painterResource(id = R.drawable.bakkthing),
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxSize()
                     )
                     MainScreen(
                         onCollectionClick = {
@@ -137,9 +137,9 @@ fun CapyGachaApp(
                             navController.navigate(CapyGachaScreen.Collection.name)
                         },
                         onSummonClick = {
-                               coroutineScope.launch {
-                                   viewModel.insertImage(it)
-                               }
+//                               coroutineScope.launch {
+//                                   viewModel.insertImage(it)
+//                               }
                             navController.navigate(CapyGachaScreen.Summon.name)
 
                         }
@@ -171,7 +171,7 @@ fun CapyGachaApp(
                         painter = painterResource(id = R.drawable.backgroundgacha),
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxSize()
                     )
                     CollectionScreen(
                         imgList = imgCollection,

@@ -13,5 +13,7 @@ data class Image (
     @ColumnInfo(name = "name")
     val name: String,
     @ColumnInfo(name = "summoned")
-    val summoned: Boolean = false
+    val summoned: Boolean = false,
+    @ColumnInfo(name = "rarity")
+    val rarity: String
 )

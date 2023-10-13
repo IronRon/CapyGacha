@@ -19,8 +19,14 @@ interface GachaDao {
     @Delete
     suspend fun delete(image: Image)
 
-    @Query("SELECT * from image WHERE id = :id")
-    suspend fun getItem(id: Int): Image
+//    @Query("SELECT * from image WHERE id = :id")
+//    suspend fun getItem(id: Int): Image
+
+    @Query("SELECT * from image WHERE rarity = :rarity LIMIT 1 OFFSET :row")
+    suspend fun getItem(row: Int, rarity: String): Image
+
+    @Query("SELECT COUNT(*) from image WHERE rarity = :rarity GROUP BY rarity")
+    suspend fun getNumberOfImages(rarity: String): Int
 
     @Query("SELECT * from image WHERE summoned = 1 ORDER BY id ASC")
     fun getAllItems(): Flow<List<Image>>
