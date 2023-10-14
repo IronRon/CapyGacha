@@ -1,5 +1,6 @@
 package com.example.capygacha.ui
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -18,8 +19,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import com.example.capygacha.R
 import com.example.capygacha.data.Image
 
@@ -53,13 +52,8 @@ fun CollectionScreen(
                     modifier = Modifier.height(110.dp),
                     shape = MaterialTheme.shapes.medium,
                 ) {
-                    AsyncImage(
-                        model = ImageRequest.Builder(context = LocalContext.current)
-                            .data(resourceId)
-                            .crossfade(true)
-                            .build(),
-                        error = painterResource(R.drawable.ic_broken_image),
-                        placeholder = painterResource(R.drawable.loading_img),
+                    Image(
+                        painter = painterResource(id = resourceId),
                         contentDescription = stringResource(R.string.pull_photo),
                         contentScale = ContentScale.Crop,
                         modifier = Modifier.fillMaxWidth()

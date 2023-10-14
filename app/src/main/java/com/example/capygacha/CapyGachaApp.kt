@@ -90,7 +90,7 @@ fun CapyGachaAppBar(
             }
         },
         actions = {
-            if (canSaveCharacter) {
+            if (currentScreen == CapyGachaScreen.Character && canSaveCharacter) {
                 IconButton(onClick = addToHome) {
                     Icon(
                         painter = painterResource(id = R.drawable.baseline_add_to_home_screen_24),
@@ -167,11 +167,8 @@ fun CapyGachaApp(
                             navController.navigate(CapyGachaScreen.Collection.name)
                         },
                         onSummonClick = {
-//                               coroutineScope.launch {
-//                                   viewModel.insertImage(it)
-//                               }
                             navController.navigate(CapyGachaScreen.Summon.name)
-
+                            //viewModel.insertImage(it)
                         }
                     )
                 }

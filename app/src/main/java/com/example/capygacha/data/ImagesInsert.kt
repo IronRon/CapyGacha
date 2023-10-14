@@ -7,7 +7,6 @@ val images = listOf(
         rarity = "Common"
     ),
     Image(
-
         resFile = "supercapy1",
         name = "Super Capy 1",
         rarity = "Uncommon"
@@ -183,7 +182,7 @@ val images = listOf(
     Image(
         resFile = "neco_arc",
         name = "Neco Arc",
-        rarity = "Common"
+        rarity = "Legendary"
     ),
     Image(
         resFile = "shikitohno_meltyblood",

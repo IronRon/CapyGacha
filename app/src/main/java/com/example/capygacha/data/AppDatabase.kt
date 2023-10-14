@@ -20,8 +20,8 @@ abstract class AppDatabase : RoomDatabase() {
         fun getDatabase(context: Context): AppDatabase {
             // if the Instance is not null, return it, otherwise create a new database instance.
             return Instance ?: synchronized(this) {
-                Room.databaseBuilder(context, AppDatabase::class.java, "image_base")
-                    .createFromAsset("database/image_base.db")
+                Room.databaseBuilder(context, AppDatabase::class.java, "image_database")
+                    .createFromAsset("database/image_database.db")
                     .build()
                     .also { Instance = it }
             }

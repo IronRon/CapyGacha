@@ -16,12 +16,6 @@ interface GachaDao {
     @Update
     suspend fun update(image: Image)
 
-    @Delete
-    suspend fun delete(image: Image)
-
-//    @Query("SELECT * from image WHERE id = :id")
-//    suspend fun getItem(id: Int): Image
-
     @Query("SELECT * from image WHERE rarity = :rarity LIMIT 1 OFFSET :row")
     suspend fun getItem(row: Int, rarity: String): Image
 

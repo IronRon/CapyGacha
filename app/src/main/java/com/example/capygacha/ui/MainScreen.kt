@@ -29,9 +29,6 @@ import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
 import coil.size.Size
 import com.example.capygacha.R
-import com.example.capygacha.data.Image
-import com.example.capygacha.data.defaultImage
-import com.example.capygacha.data.images
 
 @Composable
 fun MainScreen(
@@ -77,9 +74,7 @@ fun MainScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                 }
             }
-
         }
-
     }
 }
 

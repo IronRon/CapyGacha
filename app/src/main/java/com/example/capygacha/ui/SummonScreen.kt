@@ -1,32 +1,36 @@
 package com.example.capygacha.ui
 
 import android.content.Context
+import androidx.annotation.DrawableRes
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeJoin
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.ExperimentalTextApi
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,7 +38,6 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.capygacha.R
 import com.example.capygacha.data.Image
-import com.example.capygacha.data.images
 
 @Composable
 fun SummonScreen(
@@ -93,10 +96,77 @@ fun SummonScreen(
                     Text(stringResource(R.string.summon_button))
                 }
             }
+            if (img.rarity == "Legendary") {
+                val logo = when (img.resFile) {
+                    "astamagic" -> R.drawable.black_clover_logo
+                    "natsuend" -> R.drawable.fairy_tail_logo
+                    "rose" -> R.drawable.dragon_ball_super_logo
+                    "masteredultracapyinstinct" -> R.drawable.dragon_ball_super_logo
+                    "knightofthewind" -> R.drawable.sonic_logo
+                    "neco_arc" -> R.drawable.tsukihime_logo
+                    else -> R.drawable.drip_gok
+                }
+
+                LegendAnimation(logo)
+            }
         }
         //Spacer(modifier = modifier.weight(1f))
     }
 }
+
+@OptIn(ExperimentalAnimationApi::class)
+@Composable
+fun LegendAnimation(
+    @DrawableRes logo: Int,
+    modifier: Modifier = Modifier
+) {
+    val logoState = remember {
+        MutableTransitionState(false).apply {
+            // Start the animation immediately.
+            targetState = true
+        }
+    }
+//    val gifState = remember {
+//        MutableTransitionState(false)
+//    }
+
+    Box {
+        androidx.compose.animation.AnimatedVisibility(
+            visibleState = logoState,
+            enter = scaleIn(
+                initialScale = 0f,
+                animationSpec = tween(2000)
+            ) + fadeIn(
+                // Fade in with the initial alpha of 0.3f.
+                initialAlpha = 0f,
+                animationSpec = tween(2000)
+            ),
+            exit = fadeOut(),
+            modifier = modifier.fillMaxSize().background(Color.Black)
+        ) {
+            Image(
+                painter = painterResource(id = logo),
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+            )
+        }
+
+        logoState.targetState = false
+//        gifState.targetState = true
+//
+//        androidx.compose.animation.AnimatedVisibility(
+//            visibleState = gifState,
+//            exit = fadeOut(),
+//            modifier = Modifier.fillMaxSize().background(Color.Black)
+//        ) {
+//            GifImage()
+//        }
+//        gifState.targetState = false
+    }
+}
+
 
 @Composable
 fun TextColor(

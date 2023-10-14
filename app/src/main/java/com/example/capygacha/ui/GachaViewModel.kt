@@ -36,11 +36,12 @@ class GachaViewModel(
                 initialValue = GachaUiState()
             )
 
-    fun insertImage(image: Image) {
-        viewModelScope.launch(Dispatchers.Default) {
-            gachaDao.insert(image)
-        }
-    }
+
+//  fun insertImage(image: Image) {
+//      viewModelScope.launch(Dispatchers.Default) {
+//          gachaDao.insert(image)
+//      }
+//  }
 
     fun getAllImage(): Flow<List<Image>> = gachaDao.getAllItems()
 
@@ -56,7 +57,7 @@ class GachaViewModel(
 
         val numOfImg = gachaDao.getNumberOfImages(rarity)
 
-        val randomInt = Random.nextInt(1, numOfImg)
+        val randomInt = Random.nextInt(0, numOfImg)
         val img = gachaDao.getItem(randomInt, rarity)
         gachaDao.update(img.copy(summoned = true))
 
