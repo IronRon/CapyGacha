@@ -247,4 +247,4 @@ val images = listOf(
     )
 )
 
-val defaultImage = Image(id = -1, resFile = "loading_img", name = "placeholder", rarity = "Common")
+val defaultImage = Image(id = -1, resFile = "loading_img", name = "", rarity = "Common", summoned = true)

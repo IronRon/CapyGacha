@@ -10,16 +10,13 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -42,8 +39,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.capygacha.data.Image
 import com.example.capygacha.data.defaultImage
+import com.example.capygacha.ui.CharacterScreen
 import com.example.capygacha.ui.CollectionScreen
 import com.example.capygacha.ui.GachaViewModel
 import com.example.capygacha.ui.MainScreen
@@ -57,17 +54,27 @@ enum class CapyGachaScreen(@StringRes val title: Int) {
     Start(title = R.string.app_name),
     Summon(title = R.string.summon_screen),
     Collection(title = R.string.collection_screen),
+    Character(title = R.string.character_screen)
 }
 
 @Composable
 fun CapyGachaAppBar(
     currentScreen: CapyGachaScreen,
     canNavigateBack: Boolean,
+    canSaveCharacter: Boolean,
+    characterName: String,
     navigateUp: () -> Unit,
-    modifier: Modifier = Modifier
+    addToHome: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     TopAppBar(
-        title = { Text(stringResource(currentScreen.title)) },
+        title = {
+            if (currentScreen == CapyGachaScreen.Character) {
+                Text(stringResource(currentScreen.title, characterName))
+            } else {
+                Text(stringResource(currentScreen.title))
+            }
+                },
         colors = TopAppBarDefaults.mediumTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         ),
@@ -81,6 +88,17 @@ fun CapyGachaAppBar(
                     )
                 }
             }
+        },
+        actions = {
+            if (canSaveCharacter) {
+                IconButton(onClick = addToHome) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.baseline_add_to_home_screen_24),
+                        contentDescription = "Add to Home Screen"
+                    )
+                }
+            }
+
         }
     )
 }
@@ -99,17 +117,28 @@ fun CapyGachaApp(
         backStackEntry?.destination?.route ?: CapyGachaScreen.Start.name
     )
     val coroutineScope = rememberCoroutineScope()
-    var img by mutableStateOf(defaultImage)
+    var summonImg by mutableStateOf(defaultImage)
+    var characterImg by remember {mutableStateOf(defaultImage)}
+    //var homeImg by remember {mutableStateOf(defaultImage.resFile)}
+    val homeImg = viewModel.uiState.collectAsState().value.homeImage
+    var canSaveBoolean by remember { mutableStateOf(false) }
     val mMediaPlayer = MediaPlayer.create(LocalContext.current, R.raw.zanza)
 
-    mMediaPlayer.start()
+    //mMediaPlayer.start()
 
     Scaffold(
         topBar = {
             CapyGachaAppBar(
                 currentScreen = currentScreen,
                 canNavigateBack = navController.previousBackStackEntry != null,
-                navigateUp = { navController.navigateUp() }
+                canSaveCharacter = canSaveBoolean,
+                characterName = characterImg.name,
+                navigateUp = { navController.navigateUp() },
+                addToHome = {
+                    //homeImg = characterImg.resFile
+                    viewModel.selectHomeImage(characterImg.resFile)
+                    canSaveBoolean = false
+                }
             )
         }
     ) { innerPadding ->
@@ -130,6 +159,7 @@ fun CapyGachaApp(
                         modifier = Modifier.fillMaxSize()
                     )
                     MainScreen(
+                        img = homeImg,
                         onCollectionClick = {
                             coroutineScope.launch {
                                 viewModel.getAllImage()
@@ -155,10 +185,10 @@ fun CapyGachaApp(
                         modifier = Modifier.fillMaxSize()
                     )
                     SummonScreen(
-                        img = img,
+                        img = summonImg,
                         summon = {
                             coroutineScope.launch {
-                                img = viewModel.getImage()
+                                summonImg = viewModel.getImage()
                             }
                         }
                     )
@@ -175,11 +205,25 @@ fun CapyGachaApp(
                     )
                     CollectionScreen(
                         imgList = imgCollection,
-                        summon = {
-                            coroutineScope.launch {
-                                img = viewModel.getImage()
-                            }
+                        onCardClick = {
+                            characterImg = it
+                            canSaveBoolean = true
+                            navController.navigate(CapyGachaScreen.Character.name)
                         }
+                    )
+                }
+            }
+            composable(route = CapyGachaScreen.Character.name) {
+                Box {
+                    LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+                    Image(
+                        painter = painterResource(id = R.drawable.backgroundgacha),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                    CharacterScreen(
+                        img = characterImg
                     )
                 }
             }

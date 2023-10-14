@@ -2,6 +2,7 @@
     <string name="app_name">CapyGacha</string>
     <string name="summon_screen">Summon</string>
     <string name="collection_screen">Collection</string>
+    <string name="character_screen">%s</string>
     <string name="back_button">Back</string>
     <string name="summon_button">Summon</string>
     <string name="collection_button">Collection</string>

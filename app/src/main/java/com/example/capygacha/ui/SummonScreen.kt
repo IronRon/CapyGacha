@@ -1,6 +1,7 @@
 package com.example.capygacha.ui
 
 import android.content.Context
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,11 +19,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.ExperimentalTextApi
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.capygacha.R
@@ -57,13 +64,28 @@ fun SummonScreen(
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxWidth()
             )
-            Column(modifier = modifier) {
+            Column(
+                modifier = modifier,
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                if (img.summoned == false) {
+                    Row {
+                        Image(
+                            painter = painterResource(R.drawable.new_summon),
+                            contentDescription = null
+                        )
+                        Spacer(modifier = modifier.weight(1f))
+                    }
+                }
                 Spacer(modifier = modifier.weight(1f))
-                TextColor(
-                    name = img.name,
-                    rarity = img.rarity,
-                    modifier = modifier.padding(12.dp)
-                )
+                if (img.id != -1) {
+                    TextColor(
+                        name = img.name,
+                        rarity = img.rarity,
+                        modifier = modifier.padding(bottom = 12.dp)
+                    )
+                }
                 Button(
                     onClick = summon,
                     modifier = modifier.widthIn(min = 150.dp)
@@ -92,11 +114,24 @@ fun TextColor(
         else -> Color(0xFFFFFFFF)
     }
 
-    Text(
-        text = name,
-        color = color,
-        modifier = modifier.padding(12.dp)
-    )
+    Box(
+        modifier = modifier.fillMaxWidth(),
+        contentAlignment = Alignment.Center
+    ) {
+        Image(
+            painter = painterResource(R.drawable.summonbanner),
+            modifier = Modifier.fillMaxWidth(),
+            contentDescription = null
+        )
+        Text(
+            text = name,
+            color = color,
+            fontWeight = FontWeight.Bold,
+            fontSize = 28.sp,
+            modifier = modifier.padding(12.dp)
+        )
+    }
+
 }
 
 

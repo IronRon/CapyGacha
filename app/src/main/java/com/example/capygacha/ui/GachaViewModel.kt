@@ -8,18 +8,33 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.capygacha.GachaApplication
+import com.example.capygacha.R
 import com.example.capygacha.data.GachaDao
 import com.example.capygacha.data.Image
+import com.example.capygacha.data.UserPreferencesRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 class GachaViewModel(
-    //private val itemsRepository: ItemsRepository,
+    private val userPreferencesRepository: UserPreferencesRepository,
     val gachaDao: GachaDao,
 ): ViewModel() {
 
+    val uiState: StateFlow<GachaUiState> =
+        userPreferencesRepository.homeImage.map { homeImage ->
+            GachaUiState(homeImage)
+        }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = GachaUiState()
+            )
 
     fun insertImage(image: Image) {
         viewModelScope.launch(Dispatchers.Default) {
@@ -48,14 +63,22 @@ class GachaViewModel(
         return img
     }
 
+    fun selectHomeImage(homeImage: String) {
+        viewModelScope.launch {
+            userPreferencesRepository.saveHomeImagePreference(homeImage)
+        }
+    }
+
     companion object {
         val factory : ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 val application = (this[APPLICATION_KEY] as GachaApplication)
-                GachaViewModel(application.database.gachaDao())
-                //GachaViewModel(GachaApplication().container.itemsRepository)
+                GachaViewModel(application.userPreferencesRepository, application.database.gachaDao())
             }
         }
     }
-
 }
+
+data class GachaUiState(
+    val homeImage: String = "loading_img"
+)
