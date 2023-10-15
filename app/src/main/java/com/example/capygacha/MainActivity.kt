@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import com.example.capygacha.ui.AudioPlay
+import com.example.capygacha.ui.AudioPlay.pauseAudio
 import com.example.capygacha.ui.theme.CapyGachaTheme
 
 class MainActivity : ComponentActivity() {
@@ -23,6 +25,16 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        AudioPlay.continuePlaying(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        AudioPlay.pauseAudio()
     }
 }
 

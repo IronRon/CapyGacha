@@ -40,6 +40,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.capygacha.data.defaultImage
+import com.example.capygacha.ui.AudioPlay
 import com.example.capygacha.ui.CharacterScreen
 import com.example.capygacha.ui.CollectionScreen
 import com.example.capygacha.ui.GachaViewModel
@@ -122,9 +123,6 @@ fun CapyGachaApp(
     //var homeImg by remember {mutableStateOf(defaultImage.resFile)}
     val homeImg = viewModel.uiState.collectAsState().value.homeImage
     var canSaveBoolean by remember { mutableStateOf(false) }
-    val mMediaPlayer = MediaPlayer.create(LocalContext.current, R.raw.zanza)
-
-    //mMediaPlayer.start()
 
     Scaffold(
         topBar = {
@@ -142,14 +140,13 @@ fun CapyGachaApp(
             )
         }
     ) { innerPadding ->
-        //val uiState by viewModel.uiState.collectAsState()
-
         NavHost(
             navController = navController,
             startDestination = CapyGachaScreen.Start.name,
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(route = CapyGachaScreen.Start.name) {
+                AudioPlay.stopAudio()
                 Box {
                     LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
                     Image(

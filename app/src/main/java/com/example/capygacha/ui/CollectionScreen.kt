@@ -19,6 +19,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.capygacha.R
 import com.example.capygacha.data.Image
 
@@ -52,8 +54,19 @@ fun CollectionScreen(
                     modifier = Modifier.height(110.dp),
                     shape = MaterialTheme.shapes.medium,
                 ) {
-                    Image(
-                        painter = painterResource(id = resourceId),
+//                    Image(
+//                        painter = painterResource(id = resourceId),
+//                        contentDescription = stringResource(R.string.pull_photo),
+//                        contentScale = ContentScale.Crop,
+//                        modifier = Modifier.fillMaxWidth()
+//                    )
+                    AsyncImage(
+                        model = ImageRequest.Builder(context = LocalContext.current)
+                            .data(resourceId)
+                            .crossfade(true)
+                            .build(),
+                        error = painterResource(R.drawable.ic_broken_image),
+                        placeholder = painterResource(R.drawable.loading_img),
                         contentDescription = stringResource(R.string.pull_photo),
                         contentScale = ContentScale.Crop,
                         modifier = Modifier.fillMaxWidth()

@@ -1,6 +1,7 @@
 package com.example.capygacha.ui
 
 import android.content.Context
+import android.media.MediaPlayer
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.MutableTransitionState
@@ -24,6 +25,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,6 +40,8 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.capygacha.R
 import com.example.capygacha.data.Image
+import kotlinx.coroutines.launch
+
 
 @Composable
 fun SummonScreen(
@@ -83,6 +87,7 @@ fun SummonScreen(
                 }
                 Spacer(modifier = modifier.weight(1f))
                 if (img.id != -1) {
+
                     TextColor(
                         name = img.name,
                         rarity = img.rarity,
@@ -96,28 +101,35 @@ fun SummonScreen(
                     Text(stringResource(R.string.summon_button))
                 }
             }
+
             if (img.rarity == "Legendary") {
-                val logo = when (img.resFile) {
-                    "astamagic" -> R.drawable.black_clover_logo
-                    "natsuend" -> R.drawable.fairy_tail_logo
-                    "rose" -> R.drawable.dragon_ball_super_logo
-                    "masteredultracapyinstinct" -> R.drawable.dragon_ball_super_logo
-                    "knightofthewind" -> R.drawable.sonic_logo
-                    "neco_arc" -> R.drawable.tsukihime_logo
-                    else -> R.drawable.drip_gok
+                val character = when (img.resFile) {
+                    "astamagic" -> Pair(R.drawable.black_clover_logo, R.raw.haruka_mirai)
+                    "natsuend" -> Pair(R.drawable.fairy_tail_logo, R.raw.dragon_force)
+                    "rose" -> Pair(R.drawable.dragon_ball_super_logo, R.raw.ui_theme)
+                    "masteredultracapyinstinct" -> Pair(R.drawable.dragon_ball_super_logo, R.raw.ui_theme)
+                    "knightofthewind" -> Pair(R.drawable.sonic_logo, R.raw.knight_of_the_wind)
+                    "neco_arc" -> Pair(R.drawable.tsukihime_logo, R.raw.tsukihime_ost)
+                    else -> Pair(R.drawable.drip_gok, R.raw.zanza)
                 }
 
-                LegendAnimation(logo)
+                LegendAnimation(
+                    logo = character.first,
+                    music = character.second,
+                )
+            } else {
+                AudioPlay.stopAudio()
             }
         }
-        //Spacer(modifier = modifier.weight(1f))
     }
 }
+
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun LegendAnimation(
     @DrawableRes logo: Int,
+    music: Int,
     modifier: Modifier = Modifier
 ) {
     val logoState = remember {
@@ -129,6 +141,8 @@ fun LegendAnimation(
 //    val gifState = remember {
 //        MutableTransitionState(false)
 //    }
+
+    AudioPlay.playAudio(LocalContext.current, music)
 
     Box {
         androidx.compose.animation.AnimatedVisibility(
@@ -167,7 +181,6 @@ fun LegendAnimation(
     }
 }
 
-
 @Composable
 fun TextColor(
     name: String,
@@ -203,7 +216,6 @@ fun TextColor(
     }
 
 }
-
 
 fun getDrawableResourceId(context: Context, drawableName: String): Int {
     return try {
